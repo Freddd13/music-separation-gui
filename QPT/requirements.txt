@@ -1,0 +1,6 @@
+torch @ file:///E:/music_tools/sep_gui/torch-1.7.1%2Bcu110-cp37-cp37m-win_amd64.whl
+torchaudio @ file:///E:/music_tools/sep_gui/torchaudio-0.7.2-cp37-none-win_amd64.whl
+torchvision @ file:///E:/music_tools/sep_gui/torchvision-0.8.2%2Bcu110-cp37-cp37m-win_amd64.whl
+typing_extensions==4.0.1
+wincertstore==0.2
+bytesep==0.1.1
