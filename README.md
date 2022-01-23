@@ -12,7 +12,7 @@ The installer in the [release](https://github.com/Freddd13/music-separation-gui/
 
 ## Installation Guide
 Download the latest [release](https://github.com/Freddd13/music-separation-gui/releases).
-Open `run.exe`, wait the terminal to download and install packages. 
+Open `run.exe`, wait the terminal to download and install packages. If you encounter a win32 dll import error, try to run the `fix_win32_error.bat`.
 
 **This may take some time, please be patient.**
 **If it is stuck for too long and does not download things, please try to press "Enter" on your keyboard!!!** (This problem may only occurs during the first opening.)
