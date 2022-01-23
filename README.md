@@ -1,7 +1,7 @@
 # <p align="center">Music Separation GUI</p>
 This repo provides a one-click install for bytedance's [music_source_separation](https://github.com/bytedance/music_source_separation) and an easy-to-use GUI. 
 Users can deal with single or batch music separation easily under Windows.
-The installer in the [release]() contains everything the program needs including cuda. 
+The installer in the [release](https://github.com/Freddd13/music-separation-gui/releases) contains everything the program needs including cuda. 
 ![](https://raw.githubusercontent.com/Freddd13/picBed/master/img/Snipaste_2022-01-22_20-47-50.png)
 
 # Installation
@@ -11,24 +11,19 @@ The installer in the [release]() contains everything the program needs including
 - Font Consolas
 
 ## Installation Guide
-Download the latest [release]().
-Open `run.exe`, wait the terminal to download and install packages. This may take some time, please be patient. After the first installation, you can quickly start the program in the future.
+Download the latest [release](https://github.com/Freddd13/music-separation-gui/releases).
+Open `run.exe`, wait the terminal to download and install packages. 
+
+**This may take some time, please be patient.**
+**If it is stuck for too long and does not download things, please try to press "Enter" on your keyboard!!!** (This problem may only occurs during the first opening.)
+
+After the first installation, you can quickly start the program in the future.
 
 # Usage
 You can choose either single music or multiple ones to seperate and get vocal, accompaniment or both. When dealing with a batch of songs, you need to put them in one clean folder.
 If you have your own model and yaml, please switch to the Settings tab and load your own ckpt and yaml.
 
-# References
-[1] Qiuqiang Kong, Yin Cao, Haohe Liu, Keunwoo Choi, Yuxuan Wang, Decoupling Magnitude and Phase Estimation with Deep ResUNet for Music Source Separation, International Society for Music Information Retrieval (ISMIR), 2021.
-```
-@inproceedings{kong2021decoupling,
-  title={Decoupling Magnitude and Phase Estimation with Deep ResUNet for Music Source Separation.},
-  author={Kong, Qiuqiang and Cao, Yin and Liu, Haohe and Choi, Keunwoo and Wang, Yuxuan },
-  booktitle={ISMIR},
-  year={2021},
-  organization={Citeseer}
-}
-```
+
 
 # Note
 ## CPU or GPU is being used?
@@ -46,6 +41,18 @@ python MainUI.py
 ```
 ## Supported platforms
 The GUI itself is cross-platformed, however, the packaging tool used here currently only supports windows. If you have proper torch environment installed, you can also use under linux and mac. Remember the program has been only tested under windows.
+
+# References
+[1] Qiuqiang Kong, Yin Cao, Haohe Liu, Keunwoo Choi, Yuxuan Wang, Decoupling Magnitude and Phase Estimation with Deep ResUNet for Music Source Separation, International Society for Music Information Retrieval (ISMIR), 2021.
+```
+@inproceedings{kong2021decoupling,
+  title={Decoupling Magnitude and Phase Estimation with Deep ResUNet for Music Source Separation.},
+  author={Kong, Qiuqiang and Cao, Yin and Liu, Haohe and Choi, Keunwoo and Wang, Yuxuan },
+  booktitle={ISMIR},
+  year={2021},
+  organization={Citeseer}
+}
+```
 
 # Acknowledgements
 
