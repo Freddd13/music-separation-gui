@@ -217,7 +217,7 @@ class MainWindow(MainBind):
 
         # fucking callback error forces me to do this
         extension = self.tab1.combo.get_arg_info().get()
-        if extension == "same as source":
+        if extension == "Same as source":
             extension = None
 
         separate_file(
@@ -262,7 +262,7 @@ class MainWindow(MainBind):
             return
 
         extension = self.tab2.combo.get_arg_info().get()
-        if extension == "same as source":
+        if extension == "Same as source":
             extension = None
 
         separate_dir(
