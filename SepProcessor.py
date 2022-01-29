@@ -112,7 +112,8 @@ def match_audio_channels(audio: np.array, input_channels: int) -> np.array:
 def separate_file(config_yamls, checkpoint_paths, audio_path, output_path, scale_volume, cpu, extension, source_type, progress) -> NoReturn:
     r"""Separate a single file.
      """
-
+    
+    download_mats()
     task_num = 1 if len(config_yamls) == 1 else 2
 
     if cpu or not torch.cuda.is_available():
@@ -174,7 +175,7 @@ def separate_file(config_yamls, checkpoint_paths, audio_path, output_path, scale
 def separate_dir(config_yamls, checkpoint_paths, audios_dir, outputs_dir, scale_volume, cpu, extension, source_type,  progress) -> NoReturn:
     r"""Separate all audios in a directory.
      """
-
+    download_mats()
     if cpu or not torch.cuda.is_available():
         device = torch.device('cpu')
     else:
@@ -349,5 +350,25 @@ def download_checkpoints() -> NoReturn:
     remote_zip_scripts_link = os.path.join(zenodo_dir, "train_scripts.zip?download=1").replace('\\', '/')
     local_zip_scripts_path = os.path.join(local_checkpoints_dir, "train_scripts.zip")
 
-    os.path.join(os.getcwd(), "tools/wget.exe") + " -O {} {}".format(local_zip_scripts_path, remote_zip_scripts_link)
-    os.path.join(os.getcwd(), "tools/unzip.exe") + " {} -d {}".format(local_zip_scripts_path, local_checkpoints_dir)
+    cmd1 = os.path.join(os.getcwd(), "tools/wget.exe") + " -O {} {}".format(local_zip_scripts_path, remote_zip_scripts_link)
+    cmd2 = os.path.join(os.getcwd(), "tools/unzip.exe") + " {} -d {}".format(local_zip_scripts_path, local_checkpoints_dir)
+    os.system(cmd1)
+    os.system(cmd2)
+    
+    
+def download_mats():
+	filters_dir = '{}/bytesep_data/filters'.format(str(pathlib.Path.home()))
+
+	for _name in ['f_4_64.mat', 'h_4_64.mat']:
+
+		_path = os.path.join(filters_dir, _name)
+
+		if not os.path.isfile(_path):
+			os.makedirs(os.path.dirname(_path), exist_ok=True)
+			remote_path = (
+				"https://zenodo.org/record/5513378/files/{}?download=1".format(
+					_name
+				)
+			)
+			command_str = os.path.join(os.getcwd(), "tools/wget.exe") + '-O "{}" "{}"'.format(_path, remote_path)
+			os.system(command_str)
