@@ -20,6 +20,7 @@ Open `run.exe`, wait the terminal to download and install packages. If you encou
 After the first installation, you can quickly start the program in the future.
 
 # Usage
+After installation, you can delete `opt/package` to free some space.
 You can choose either single music or multiple ones to seperate and get vocal, accompaniment or both. When dealing with a batch of songs, you need to put them in one clean folder.
 If you have your own model and yaml, please switch to the Settings tab and load your own ckpt and yaml.
 
@@ -32,6 +33,10 @@ If it displays "use cuda for separation" and your GPU type, the GPU is being use
 
 ## GUI only
 It's recommended to use the installer. If you have already got torch 1.7.1's gpu environment installed on your Windows PC or just want to use the gui, you can clone this repo to use in your environment.
+Remember to delete the torch-related packages in the requirements.txt
+(torch==1.7.1+cu110
+torchvision==0.8.2+cu110
+torchaudio==0.7.2)
 
 ```bash
 git clone git@github.com:Freddd13/music-seperation-gui.git
