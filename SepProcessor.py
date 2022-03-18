@@ -1,6 +1,9 @@
 import argparse
 import os
+import sys
+import ctypes
 import pathlib
+import shutil
 import time
 from typing import NoReturn
 
@@ -113,7 +116,7 @@ def separate_file(config_yamls, checkpoint_paths, audio_path, output_path, scale
     r"""Separate a single file.
      """
     
-    download_mats()
+    deal_with_mats()
     task_num = 1 if len(config_yamls) == 1 else 2
 
     if cpu or not torch.cuda.is_available():
@@ -163,9 +166,12 @@ def separate_file(config_yamls, checkpoint_paths, audio_path, output_path, scale
         target_path = os.path.join(output_path, suffix)
         soundfile.write(file=tmp_wav_path, data=sep_audio.T, samplerate=sample_rate)
 
-        os.system(
-            'ffmpeg -y -loglevel panic -i "{}" "{}"'.format(tmp_wav_path, target_path)
-        )
+#        os.system(
+#            'ffmpeg -y -loglevel panic -i "{}" "{}"'.format(tmp_wav_path, target_path)
+#        )
+        cmd = os.path.join(os.getcwd(), "tools/ffmpeg.exe") + ' -y -loglevel panic -i "{}" "{}"'.format(tmp_wav_path, target_path)
+        print(cmd)
+        os.system(cmd)
         os.remove(tmp_wav_path)
 
         print('Write out to {}'.format(target_path))
@@ -175,7 +181,7 @@ def separate_file(config_yamls, checkpoint_paths, audio_path, output_path, scale
 def separate_dir(config_yamls, checkpoint_paths, audios_dir, outputs_dir, scale_volume, cpu, extension, source_type,  progress) -> NoReturn:
     r"""Separate all audios in a directory.
      """
-    download_mats()
+    deal_with_mats()
     if cpu or not torch.cuda.is_available():
         device = torch.device('cpu')
     else:
@@ -222,9 +228,11 @@ def separate_dir(config_yamls, checkpoint_paths, audios_dir, outputs_dir, scale_
             target_path = os.path.join(outputs_dir, suffix)
             soundfile.write(file=tmp_wav_path, data=sep_audio.T, samplerate=sample_rate)
 
-            os.system(
-                'ffmpeg -y -loglevel panic -i "{}" "{}"'.format(tmp_wav_path, target_path)
-            )
+#            os.system(
+#                'ffmpeg -y -loglevel panic -i "{}" "{}"'.format(tmp_wav_path, target_path)
+#            )
+            cmd = os.path.join(os.getcwd(), "tools/ffmpeg.exe") + ' -y -loglevel panic -i "{}" "{}"'.format(tmp_wav_path, target_path)
+            os.system(cmd)
             os.remove(tmp_wav_path)
 
             # inform observer
@@ -356,19 +364,31 @@ def download_checkpoints() -> NoReturn:
     os.system(cmd2)
     
     
-def download_mats():
+def deal_with_mats():
 	filters_dir = '{}/bytesep_data/filters'.format(str(pathlib.Path.home()))
-
+	source_dir = './models/filters'
+	
+	ctypes.windll.shell32.ShellExecuteW(None, "runas", sys.executable, __file__, None, 1)
+	
 	for _name in ['f_4_64.mat', 'h_4_64.mat']:
-
+		_source = os.path.join(source_dir, _name)
 		_path = os.path.join(filters_dir, _name)
-
+		
 		if not os.path.isfile(_path):
 			os.makedirs(os.path.dirname(_path), exist_ok=True)
-			remote_path = (
-				"https://zenodo.org/record/5513378/files/{}?download=1".format(
-					_name
+
+			try:
+				shutil.copyfile(_source, _path)
+				
+			except Exception as e:
+				print(e)
+				print("Downloading mat...")
+				
+				remote_path = (
+					"https://zenodo.org/record/5513378/files/{}?download=1".format(
+						_name
+					)
 				)
-			)
-			command_str = os.path.join(os.getcwd(), "tools/wget.exe") + '-O "{}" "{}"'.format(_path, remote_path)
-			os.system(command_str)
+				
+				command_str = os.path.join(os.getcwd(), "tools/wget.exe") + '-O "{}" "{}"'.format(_path, remote_path)
+				os.system(command_str)

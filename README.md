@@ -6,18 +6,26 @@ The installer in the [release](https://github.com/Freddd13/music-separation-gui/
 
 # Installation
 ## Prerequisites
-- An Nvidia graphic card (otherwises it will use cpu to infer)
-- **[FFmpeg](https://www.wikihow.com/Install-FFmpeg-on-Windows) with its env variable properly set in your system**
+- An Nvidia graphic card with its driver installed (otherwises it will use CPU to infer) 
 - Font Consolas
- 
+
 ## Installation Guide
+#### One click install (If you have no torch GPU environment):
+
 Download the latest [release](https://github.com/Freddd13/music-separation-gui/releases).
-Open `run.exe`, wait the terminal to download and install packages. If you encounter a win32 dll import error, try to run the `fix_win32_error.bat`.
+
+To install, run `install.cmd`. 
+
+Wait the terminal to download and install packages. If you encounter a win32 dll import error, try to run the `fix_win32_error.bat`.
 
 **This may take some time, please be patient.**
-**If it is stuck for too long and does not download things, please try to press "Enter" on your keyboard!!!** (This problem may only occurs during the first opening.)
+**If it is stuck for too long, please try to press "Enter" on your keyboard!!!** (This problem may only occurs during the first opening.)
 
-After the first installation, you can quickly start the program in the future.
+After the first installation, you can quickly start the program by running `run.exe` in the future. In fact, the `install.cmd` will provoke the `run.exe`. The former is to deal with torch packages, so there's no need to run it after the installation.
+
+#### GUI only (If you have already got torch `1.7.1` GPU environment):
+
+Please checkout [GUI only](#GUI only)
 
 # Usage
 After installation, you can delete `opt/package` to free some space.
@@ -29,11 +37,12 @@ If you have your own model and yaml, please switch to the Settings tab and load 
 # Note
 ## CPU or GPU is being used?
 After press the run button, check out the console message.
-If it displays "use cuda for separation" and your GPU type, the GPU is being used. Otherwise it is CPU.
+If it displays "using cuda for separation" and your GPU type, the GPU is being used. Otherwise it is CPU.
 
 ## GUI only
-It's recommended to use the installer. If you have already got torch 1.7.1's gpu environment installed on your Windows PC or just want to use the gui, you can clone this repo to use in your environment.
-Remember to delete the torch-related packages in the requirements.txt
+It's recommended to use the installer. If you have already got torch 1.7.1's gpu environment installed on your Windows PC or just want to use the gui, you can clone this repo to use it in your environment.
+
+**Remember to delete the torch-related packages in the requirements.txt**
 (torch==1.7.1+cu110
 torchvision==0.8.2+cu110
 torchaudio==0.7.2)
@@ -45,7 +54,7 @@ pip install -r requirements.txt
 python MainUI.py
 ```
 ## Supported platforms
-The GUI itself is cross-platformed, however, the packaging tool used here currently only supports windows. If you have proper torch environment installed, you can also use under linux and mac. Remember the program has been only tested under windows.
+The GUI itself is cross-platformed, however, the packaging tool used here currently only supports windows. If you have proper torch environment installed, you can also use it under linux and mac. Remember the program has been only tested under windows.
 
 # References
 [1] Qiuqiang Kong, Yin Cao, Haohe Liu, Keunwoo Choi, Yuxuan Wang, Decoupling Magnitude and Phase Estimation with Deep ResUNet for Music Source Separation, International Society for Music Information Retrieval (ISMIR), 2021.
