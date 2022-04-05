@@ -54,7 +54,7 @@ pip install -r requirements.txt
 python MainUI.py
 ```
 ## Supported platforms
-The GUI itself is cross-platformed, however, the packaging tool used here currently only supports windows. If you have proper torch environment installed, you can also use it under linux and mac. Remember the program has been only tested under windows. But some code needs to be corrected to adapt other OS, for example, some `os.system code` with ".exe".
+The GUI itself is cross-platformed, however, the packaging tool used here currently only supports windows. If you have proper torch environment installed, you can also use it under linux and mac. Remember the program has been only tested under windows. Besides, some code needs to be corrected to adapt other OS, for example, some `os.system code` with ".exe".
 
 # References
 [1] Qiuqiang Kong, Yin Cao, Haohe Liu, Keunwoo Choi, Yuxuan Wang, Decoupling Magnitude and Phase Estimation with Deep ResUNet for Music Source Separation, International Society for Music Information Retrieval (ISMIR), 2021.
