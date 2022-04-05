@@ -40,11 +40,11 @@ After press the run button, check out the console message.
 If it displays "using cuda for separation" and your GPU type, the GPU is being used. Otherwise it is CPU.
 
 ## GUI only
-It's recommended to use the installer. If you have already got torch 1.7.1's gpu environment installed on your Windows PC or just want to use the gui, you can clone this repo to use it in your environment.
+It's recommended to use the installer. If you have already got torch `1.7.1`'s gpu environment installed on your Windows PC or just want to use the gui, you can clone this repo to use it in your environment.
 
-If you dont have torch installed and want to manually install gui, please first install torch gpu `1.7.1` using the following command.
-```
-conda install pytorch==1.7.1 torchvision==0.8.2 torchaudio==0.7.2 -c pytorch # or pip install
+If you don't have proper torch installed and want to manually install gui, please first install torch gpu `1.7.1` using the following command.
+```bash
+conda install pytorch==1.7.1 torchvision==0.8.2 torchaudio==0.7.2 -c pytorch  # or use pip to install
 ```
 Now you can install other things to use the GUI.
 ```bash
