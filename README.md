@@ -42,11 +42,11 @@ If it displays "using cuda for separation" and your GPU type, the GPU is being u
 ## GUI only
 It's recommended to use the installer. If you have already got torch 1.7.1's gpu environment installed on your Windows PC or just want to use the gui, you can clone this repo to use it in your environment.
 
-**Remember to delete the torch-related packages in the requirements.txt**
-(torch==1.7.1+cu110
-torchvision==0.8.2+cu110
-torchaudio==0.7.2)
-
+If you dont have torch installed and want to manually install gui, please first install torch gpu `1.7.1` using the following command.
+```
+conda install pytorch==1.7.1 torchvision==0.8.2 torchaudio==0.7.2 -c pytorch # or pip install
+```
+Now you can install other things to use the GUI.
 ```bash
 git clone git@github.com:Freddd13/music-seperation-gui.git
 cd music-source-separator
@@ -54,7 +54,7 @@ pip install -r requirements.txt
 python MainUI.py
 ```
 ## Supported platforms
-The GUI itself is cross-platformed, however, the packaging tool used here currently only supports windows. If you have proper torch environment installed, you can also use it under linux and mac. Remember the program has been only tested under windows.
+The GUI itself is cross-platformed, however, the packaging tool used here currently only supports windows. If you have proper torch environment installed, you can also use it under linux and mac. Remember the program has been only tested under windows. But some code needs to be corrected to adapt other OS, for example, some `os.system code` with ".exe".
 
 # References
 [1] Qiuqiang Kong, Yin Cao, Haohe Liu, Keunwoo Choi, Yuxuan Wang, Decoupling Magnitude and Phase Estimation with Deep ResUNet for Music Source Separation, International Society for Music Information Retrieval (ISMIR), 2021.
