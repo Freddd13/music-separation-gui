@@ -8,7 +8,8 @@ The installer in the [release](https://github.com/Freddd13/music-separation-gui/
 ## Prerequisites
 - An Nvidia graphic card with its driver installed (otherwises it will use CPU to infer) 
 - Font Consolas
-
+- **FFmpeg** installed in your system with its **environment vairable** properly set in your system.
+ (How to install ffmpeg? Check out this [article](https://www.geeksforgeeks.org/how-to-install-ffmpeg-on-windows/)! )
 ## Installation Guide
 #### One click install (If you have no torch GPU environment):
 
