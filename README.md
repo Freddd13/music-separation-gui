@@ -10,8 +10,9 @@ The installer in the [release](https://github.com/Freddd13/music-separation-gui/
 - Font Consolas
 - **FFmpeg** installed in your system with its **environment vairable** properly set in your system.
 
-Another way is to add the ffmpeg.exe directory  `resources/tools/` into system **environment variable**.
- (How to install ffmpeg? Check out this [article](https://www.geeksforgeeks.org/how-to-install-ffmpeg-on-windows/)! )
+Another way is to add my packed ffmpeg.exe directory  `resources/tools/` into system **environment variable**.
+
+ (How to install ffmpeg by yourself? Check out this [article](https://www.geeksforgeeks.org/how-to-install-ffmpeg-on-windows/)! )
 ## Installation Guide
 #### One click install (If you have no torch GPU environment):
 
