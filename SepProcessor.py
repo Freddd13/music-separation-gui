@@ -170,8 +170,6 @@ def separate_file(config_yamls, checkpoint_paths, audio_path, output_path, scale
 #            'ffmpeg -y -loglevel panic -i "{}" "{}"'.format(tmp_wav_path, target_path)
 #        )
         
-        os.system("where.exe ffmpeg")
-        os.system("where.exe wget")
         cmd = os.path.join(os.getcwd(), "tools/ffmpeg.exe") + ' -y -loglevel panic -i "{}" "{}"'.format(tmp_wav_path, target_path)
         os.system(cmd)
         os.remove(tmp_wav_path)
