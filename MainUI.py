@@ -29,7 +29,7 @@ class MainLayout(object):
         self.Gui.add_banner_tool(GitHub(url="https://github.com/bytedance/music_source_separation", name="Original Repo"))
         self.Gui.add_banner_tool(GitHub(url="https://github.com/Freddd13/music-seperation-gui", name="GUI Repo"))
         self.Gui.set_navigation_about(author="Freddd13",
-                                version="0.0.1",
+                                version="0.0.3",
                                 github_url="https://github.com/Freddd13",
                                 other_info=["GUI for bytesep"])
         self.Gui.set_navigation_about(author="qiuqiangkong",
@@ -126,7 +126,6 @@ class MainBind(MainLayout):
     #     self.multiple_aim_dir = args[self.tab2.aim_dir_button.name].get()
 
     def update_single_source_type(self, args):
-        # 这里设计真的诡异
         self.single_source_type_vocal = int( args[self.tab1.check_button.name + "-Vocals"].get() )
         self.single_source_type_accomp = int( args[self.tab1.check_button.name + "-Accompaniment"].get() )
     
@@ -188,7 +187,12 @@ class MainBind(MainLayout):
 class MainWindow(MainBind):
     def __init__(self):
         super(MainWindow, self).__init__()
-        
+        self.init_environment()
+    
+    def init_environment(self):
+            os.environ["PATH"] += os.pathsep + os.path.join(os.getcwd(), "tools")
+            os.system("where.exe ffmpeg")
+
     def run_single(self, args):
         single_source_file = args[self.tab1.source_button.name].get()
         single_aim_dir = args[self.tab1.aim_dir.name].get()
