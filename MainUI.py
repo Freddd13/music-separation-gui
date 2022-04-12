@@ -191,7 +191,6 @@ class MainWindow(MainBind):
     
     def init_environment(self):
             os.environ["PATH"] += os.pathsep + os.path.join(os.getcwd(), "tools")
-            os.system("where.exe ffmpeg")
 
     def run_single(self, args):
         single_source_file = args[self.tab1.source_button.name].get()

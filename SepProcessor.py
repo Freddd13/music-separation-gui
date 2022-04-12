@@ -169,15 +169,17 @@ def separate_file(config_yamls, checkpoint_paths, audio_path, output_path, scale
 #        os.system(
 #            'ffmpeg -y -loglevel panic -i "{}" "{}"'.format(tmp_wav_path, target_path)
 #        )
+        
+        os.system("where.exe ffmpeg")
+        os.system("where.exe wget")
         cmd = os.path.join(os.getcwd(), "tools/ffmpeg.exe") + ' -y -loglevel panic -i "{}" "{}"'.format(tmp_wav_path, target_path)
-        print(cmd)
         os.system(cmd)
         os.remove(tmp_wav_path)
 
         print('Write out to {}'.format(target_path))
         print( (i+1) / task_num * 100)
         progress.do_simple_progress( (i+1) / task_num * 100)
-
+        
 def separate_dir(config_yamls, checkpoint_paths, audios_dir, outputs_dir, scale_volume, cpu, extension, source_type,  progress) -> NoReturn:
     r"""Separate all audios in a directory.
      """
@@ -357,7 +359,6 @@ def download_checkpoints() -> NoReturn:
     # Download and unzip config yaml files.
     remote_zip_scripts_link = os.path.join(zenodo_dir, "train_scripts.zip?download=1").replace('\\', '/')
     local_zip_scripts_path = os.path.join(local_checkpoints_dir, "train_scripts.zip")
-
     cmd1 = os.path.join(os.getcwd(), "tools/wget.exe") + " -O {} {}".format(local_zip_scripts_path, remote_zip_scripts_link)
     cmd2 = os.path.join(os.getcwd(), "tools/unzip.exe") + " {} -d {}".format(local_zip_scripts_path, local_checkpoints_dir)
     os.system(cmd1)
@@ -367,23 +368,20 @@ def download_checkpoints() -> NoReturn:
 def deal_with_mats():
 	filters_dir = '{}/bytesep_data/filters'.format(str(pathlib.Path.home()))
 	source_dir = './models/filters'
-	
-	ctypes.windll.shell32.ShellExecuteW(None, "runas", sys.executable, __file__, None, 1)
-	
+		
 	for _name in ['f_4_64.mat', 'h_4_64.mat']:
 		_source = os.path.join(source_dir, _name)
 		_path = os.path.join(filters_dir, _name)
 		
 		if not os.path.isfile(_path):
+			ctypes.windll.shell32.ShellExecuteW(None, "runas", sys.executable, __file__, None, 1)
 			os.makedirs(os.path.dirname(_path), exist_ok=True)
-
 			try:
 				shutil.copyfile(_source, _path)
 				
 			except Exception as e:
 				print(e)
 				print("Downloading mat...")
-				
 				remote_path = (
 					"https://zenodo.org/record/5513378/files/{}?download=1".format(
 						_name
