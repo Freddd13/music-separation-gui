@@ -1,29 +1,65 @@
 from qgui.notebook_tools import *
 
-
 class SingleTab(object):
+    '''
+        Single tab UI
+    '''
     def __init__(self):
         self.tab_index = 0
 
-        self._source_button = ChooseFileTextButton(name="source_button", tab_index=self.tab_index, 
-                                                    label_info="Audio", entry_info= "", button_info="select")
-        self._aim_dir = ChooseDirTextButton(name="aim_button", tab_index=self.tab_index,
-                                                    label_info="Output", entry_info= "", button_info="select")
-        self._check_button = CheckButton(name="check_button_{}".format(self.tab_index), options=[("Vocals", 0), ("Accompaniment", 1)], tab_index=self.tab_index,
-                                            title="target type" )
-        self._combo = Combobox(name = "combo_{}".format(self.tab_index), options=["Same as source", "mp3", "wav", "m4a","flac"], tab_index=self.tab_index,
-                                title="output extension")
-        self._toggle_button = ToggleButton(name = "toggle_button_{}".format(self.tab_index), options=("", 1), title="Auto Open", tab_index=self.tab_index)
-        self._open_button = RunButton(name = "open_button_{}".format(self.tab_index),
-                                     text = "Open Output", 
-                                     bind_func = (lambda x: None),
-                                     tab_index=self.tab_index)
+        self._source_button = ChooseFileTextButton(
+            name = "source_button",
+            tab_index = self.tab_index,
+            label_info = "Audio",
+            entry_info= "",
+            button_info = "select"
+        )
+        self._aim_dir = ChooseDirTextButton(
+            name = "aim_button",
+            tab_index = self.tab_index,
+            label_info = "Output",
+            entry_info = "",
+            button_info = "select"
+        )
+        self._check_button = CheckButton(
+            name = f"check_button_{self.tab_index}",
+            options = [
+                    ("Vocals", 0),
+                    ("Accompaniment", 1)
+            ],
+            tab_index = self.tab_index,
+            title="target type"
+        )
+        self._combo = Combobox(
+            name = f"combo_{self.tab_index}",
+            options = ["Same as source", "mp3", "wav", "m4a", "flac"], 
+            tab_index = self.tab_index,
+            title = "output extension"
+        )
+        self._toggle_button = ToggleButton(
+            name = f"toggle_button_{self.tab_index}",
+            options = ("", 1),
+            title = "Auto Open",
+            tab_index = self.tab_index
+        )
+        self._open_button = RunButton(
+            name = f"open_button_{self.tab_index}",
+            text = "Open Output",
+            bind_func = (lambda : None),
+            tab_index = self.tab_index
+        )
         self._open_button.icon = None
-        self._processbar = Progressbar(name = "processbar_{}".format(self.tab_index), tab_index=self.tab_index, title="Progress")
-        self._run_button = RunButton(name = "run_button_{}".format(self.tab_index), 
-                                     bind_func = (lambda x: None),
-                                     tab_index=self.tab_index,
-                                     text="Run")
+        self._processbar = Progressbar(
+            name = f"processbar_{self.tab_index}",
+            tab_index = self.tab_index,
+            title = "Progress"
+        )
+        self._run_button = RunButton(
+            name = f"run_button_{self.tab_index}", 
+            bind_func = (lambda : None),
+            tab_index = self.tab_index,
+            text="Run"
+        )
 
     @property
     def source_button(self):
@@ -75,18 +111,18 @@ class SingleTab(object):
 
     def retrieve(self):
         return [
-                    self._source_button,
-                    self._aim_dir,
-                    HorizontalToolsCombine([
-                        self._check_button,
-                        self._toggle_button,
-                    ]),
-                    HorizontalToolsCombine([
-                        self._combo,
-                        self._open_button,
-                    ]),
-                    HorizontalToolsCombine([
-                        self._processbar, 
-                        self._run_button
-                    ])
-                ]  
+            self._source_button,
+            self._aim_dir,
+            HorizontalToolsCombine([
+                self._check_button,
+                self._toggle_button,
+            ]),
+            HorizontalToolsCombine([
+                self._combo,
+                self._open_button,
+            ]),
+            HorizontalToolsCombine([
+                self._processbar, 
+                self._run_button
+            ])
+        ]  

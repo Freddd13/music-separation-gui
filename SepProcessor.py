@@ -1,4 +1,7 @@
-import argparse
+from bytesep.models.lightning_modules import get_model_class
+from bytesep.separator import Separator
+from bytesep.utils import load_audio, read_yaml
+
 import os
 import sys
 import ctypes
@@ -10,10 +13,6 @@ from typing import NoReturn
 import numpy as np
 import soundfile
 import torch
-
-from bytesep.models.lightning_modules import get_model_class
-from bytesep.separator import Separator
-from bytesep.utils import load_audio, read_yaml
 
 LOCAL_CHECKPOINTS_DIR = os.path.join(os.getcwd(), "models")
 
@@ -112,10 +111,11 @@ def match_audio_channels(audio: np.array, input_channels: int) -> np.array:
         raise NotImplementedError
 
 
-def separate_file(config_yamls, checkpoint_paths, audio_path, output_path, scale_volume, cpu, extension, source_type, progress) -> NoReturn:
+def separate_file(  config_yamls, checkpoint_paths, audio_path, output_path,
+                    scale_volume, cpu, extension, source_type, progress) -> NoReturn:
     r"""Separate a single file.
      """
-    
+
     deal_with_mats()
     task_num = 1 if len(config_yamls) == 1 else 2
 
@@ -126,7 +126,7 @@ def separate_file(config_yamls, checkpoint_paths, audio_path, output_path, scale
         print("GPU: ",torch.cuda.get_device_name(0))
 
     if os.path.dirname(output_path) != "":
-        os.makedirs(os.path.dirname(output_path), exist_ok=True)        
+        os.makedirs(os.path.dirname(output_path), exist_ok=True)
 
     for i, (config_yaml, checkpoint_path) in enumerate(zip(config_yamls, checkpoint_paths)):
         # Read yaml files.
@@ -138,19 +138,21 @@ def separate_file(config_yamls, checkpoint_paths, audio_path, output_path, scale
         type_dict = {0: 'vocal', 1: 'accompaniment'}
         type_str = source_type if source_type != "both" else type_dict[i]
         if extension:
-            suffix = os.path.basename(audio_path).split('.')[-2] + "_{}.".format(type_str) + extension
+            suffix = os.path.basename(audio_path).split('.')[-2] + \
+                     f"_{type_str}." + extension
         else:
-            suffix = os.path.basename(audio_path).split('.')[-2] + "_{}.".format(type_str) + os.path.basename(audio_path).split('.')[-1]        
+            suffix = os.path.basename(audio_path).split('.')[-2] + \
+                     f"_{type_str}." + os.path.basename(audio_path).split('.')[-1]
 
         # Build Separator.
         separator = build_separator(config_yaml, checkpoint_path, device)
 
         # Load audio.
-        audio = load_audio(audio_path=audio_path, mono=False, sample_rate=sample_rate)  # audio: (input_channels, audio_samples)
+        audio = load_audio(audio_path=audio_path, mono=False, sample_rate=sample_rate)
         audio = match_audio_channels(audio, input_channels)
 
         # Separate
-        input_dict = {'waveform': audio}        
+        input_dict = {'waveform': audio}
         separate_time = time.time()
 
         sep_audio = separator.separate(input_dict)  # (input_channels, audio_samples)
@@ -166,19 +168,17 @@ def separate_file(config_yamls, checkpoint_paths, audio_path, output_path, scale
         target_path = os.path.join(output_path, suffix)
         soundfile.write(file=tmp_wav_path, data=sep_audio.T, samplerate=sample_rate)
 
-#        os.system(
-#            'ffmpeg -y -loglevel panic -i "{}" "{}"'.format(tmp_wav_path, target_path)
-#        )
-        
-        cmd = os.path.join(os.getcwd(), "tools/ffmpeg.exe") + ' -y -loglevel panic -i "{}" "{}"'.format(tmp_wav_path, target_path)
+        cmd = os.path.join(os.getcwd(), "tools/ffmpeg.exe") + \
+                f' -y -loglevel panic -i "{tmp_wav_path}" "{target_path}"'
         os.system(cmd)
         os.remove(tmp_wav_path)
 
-        print('Write out to {}'.format(target_path))
+        print(f'Write out to {target_path}')
         print( (i+1) / task_num * 100)
         progress.do_simple_progress( (i+1) / task_num * 100)
-        
-def separate_dir(config_yamls, checkpoint_paths, audios_dir, outputs_dir, scale_volume, cpu, extension, source_type,  progress) -> NoReturn:
+
+def separate_dir(config_yamls, checkpoint_paths, audios_dir, outputs_dir,
+                scale_volume, cpu, extension, source_type,  progress) -> NoReturn:
     r"""Separate all audios in a directory.
      """
     deal_with_mats()
@@ -186,7 +186,7 @@ def separate_dir(config_yamls, checkpoint_paths, audios_dir, outputs_dir, scale_
         device = torch.device('cpu')
     else:
         device = torch.device('cuda')
-        print("GPU: ",torch.cuda.get_device_name(0))        
+        print("GPU: ",torch.cuda.get_device_name(0))
 
     os.makedirs(outputs_dir, exist_ok=True)
     audio_names = sorted(os.listdir(audios_dir))
@@ -204,15 +204,17 @@ def separate_dir(config_yamls, checkpoint_paths, audios_dir, outputs_dir, scale_
             type_dict = {0: 'vocal', 1: 'accompaniment'}
             type_str = source_type if source_type != "both" else type_dict[i]
             if extension:
-                suffix = os.path.basename(audio_path).split('.')[-2] + "_{}.".format(type_str) + extension
+                suffix = os.path.basename(audio_path).split('.')[-2] + \
+                        f"_{type_str}." + extension
             else:
-                suffix = os.path.basename(audio_path).split('.')[-2] + "_{}.".format(type_str) + os.path.basename(audio_path).split('.')[-1]        
-          
+                suffix = os.path.basename(audio_path).split('.')[-2] + \
+                        f"_{type_str}." + os.path.basename(audio_path).split('.')[-1]
+
             # Load audio.
             audio = load_audio(audio_path=audio_path, mono=False, sample_rate=sample_rate)
 
             # Separate
-            input_dict = {'waveform': audio}            
+            input_dict = {'waveform': audio}
             separate_time = time.time()
 
             sep_audio = separator.separate(input_dict)  # (input_channels, audio_samples)
@@ -228,16 +230,14 @@ def separate_dir(config_yamls, checkpoint_paths, audios_dir, outputs_dir, scale_
             target_path = os.path.join(outputs_dir, suffix)
             soundfile.write(file=tmp_wav_path, data=sep_audio.T, samplerate=sample_rate)
 
-#            os.system(
-#                'ffmpeg -y -loglevel panic -i "{}" "{}"'.format(tmp_wav_path, target_path)
-#            )
-            cmd = os.path.join(os.getcwd(), "tools/ffmpeg.exe") + ' -y -loglevel panic -i "{}" "{}"'.format(tmp_wav_path, target_path)
+            cmd = os.path.join(os.getcwd(), "tools/ffmpeg.exe") + \
+                    f' -y -loglevel panic -i "{tmp_wav_path}" "{target_path}"'
             os.system(cmd)
             os.remove(tmp_wav_path)
 
             # inform observer
             progress.do_multiple_progress( (n + 1 + i*audios_num) / task_num * 100)
-            print('{} / {}, Write out to {}'.format(n+1, audios_num, outputs_dir))
+            print(f'{n+1} / {audios_num}, Write out to {outputs_dir}')
 
 def get_paths(source_type: str, model_type: str) -> [str, str]:
 
@@ -251,7 +251,7 @@ def get_paths(source_type: str, model_type: str) -> [str, str]:
         config_yaml: str
         checkpoint_path: str
     """
-    
+
     local_checkpoints_dir = LOCAL_CHECKPOINTS_DIR
     error_message = "Checkpoint is incomplete, please download again!"
 
@@ -320,7 +320,7 @@ def get_paths(source_type: str, model_type: str) -> [str, str]:
 
         else:
             raise NotImplementedError
-        
+
     except:
         download_checkpoints()
 
@@ -349,42 +349,48 @@ def download_checkpoints() -> NoReturn:
         local_checkpoint_link = os.path.join(
             local_checkpoints_dir, checkpoint_name.split("?")[0]
         )
-        command_str = os.path.join(os.getcwd(), "tools/wget.exe") + " -O {} {}".format(
-            local_checkpoint_link, remote_checkpoint_link
-        )
+        command_str = os.path.join(os.getcwd(), "tools/wget.exe") + \
+                        f" -O {local_checkpoint_link} {remote_checkpoint_link}"
         os.system(command_str)
 
     # Download and unzip config yaml files.
-    remote_zip_scripts_link = os.path.join(zenodo_dir, "train_scripts.zip?download=1").replace('\\', '/')
+    remote_zip_scripts_link = os.path.join(
+        zenodo_dir,
+        "train_scripts.zip?download=1").replace('\\', '/'
+    )
     local_zip_scripts_path = os.path.join(local_checkpoints_dir, "train_scripts.zip")
-    cmd1 = os.path.join(os.getcwd(), "tools/wget.exe") + " -O {} {}".format(local_zip_scripts_path, remote_zip_scripts_link)
-    cmd2 = os.path.join(os.getcwd(), "tools/unzip.exe") + " {} -d {}".format(local_zip_scripts_path, local_checkpoints_dir)
+
+    cmd1 = os.path.join(os.getcwd(), "tools/wget.exe") + f" -O {local_zip_scripts_path} {remote_zip_scripts_link}"
+    cmd2 = os.path.join(os.getcwd(), "tools/unzip.exe") + f" {local_zip_scripts_path} -d {local_checkpoints_dir}"
     os.system(cmd1)
     os.system(cmd2)
-    
-    
+
+
 def deal_with_mats():
-	filters_dir = '{}/bytesep_data/filters'.format(str(pathlib.Path.home()))
-	source_dir = './models/filters'
-		
-	for _name in ['f_4_64.mat', 'h_4_64.mat']:
-		_source = os.path.join(source_dir, _name)
-		_path = os.path.join(filters_dir, _name)
-		
-		if not os.path.isfile(_path):
-			ctypes.windll.shell32.ShellExecuteW(None, "runas", sys.executable, __file__, None, 1)
-			os.makedirs(os.path.dirname(_path), exist_ok=True)
-			try:
-				shutil.copyfile(_source, _path)
-				
-			except Exception as e:
-				print(e)
-				print("Downloading mat...")
-				remote_path = (
-					"https://zenodo.org/record/5513378/files/{}?download=1".format(
-						_name
-					)
-				)
-				
-				command_str = os.path.join(os.getcwd(), "tools/wget.exe") + '-O "{}" "{}"'.format(_path, remote_path)
-				os.system(command_str)
+    '''
+        Mat should at {filters_dir}. We first try to copy mat to that dir. 
+        If it failed, we try to download from zenodo.
+        Anyway, we want to get a admin power to ensure success.
+    '''
+    filters_dir = f'{str( pathlib.Path.home() )}/bytesep_data/filters'
+    source_dir = './models/filters'
+
+    for _name in ['f_4_64.mat', 'h_4_64.mat']:
+        _source = os.path.join(source_dir, _name)
+        _path = os.path.join(filters_dir, _name)
+
+        if not os.path.isfile(_path):
+            ctypes.windll.shell32.ShellExecuteW(None, "runas", sys.executable, __file__, None, 1)
+            os.makedirs(os.path.dirname(_path), exist_ok=True)
+            try:
+                shutil.copyfile(_source, _path)
+
+            except Exception as error:
+                print(error)
+                print("Downloading mat...")
+                remote_path = (
+                    f"https://zenodo.org/record/5513378/files/{_name}?download=1"
+                )
+
+                command_str = os.path.join(os.getcwd(), "tools/wget.exe") + f'-O "{_path}" "{remote_path}"'
+                os.system(command_str)

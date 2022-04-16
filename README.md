@@ -6,15 +6,12 @@ The installer in the [release](https://github.com/Freddd13/music-separation-gui/
 
 # Installation
 ## Prerequisites
-- An Nvidia graphic card with its driver installed (otherwises it will use CPU to infer) 
+- An Nvidia graphic card with its **driver** installed (otherwises it will use CPU to infer) 
 - Font Consolas
-- **FFmpeg** installed in your system with its **environment vairable** properly set in your system.
 
-Another way is to add my packed ffmpeg.exe directory  `resources/tools/` into system **environment variable**.
-
- (How to install ffmpeg by yourself? Check out this [article](https://www.geeksforgeeks.org/how-to-install-ffmpeg-on-windows/)! )
 ## Installation Guide
-#### One click install (If you have no torch GPU environment):
+Choose **one** of the following methods:
+### Method1. One click install (If you have no torch GPU environment):
 
 Download the latest [release](https://github.com/Freddd13/music-separation-gui/releases).
 
@@ -27,13 +24,15 @@ Wait the terminal to download and install packages. If you encounter a win32 dll
 
 After the first installation, you can quickly start the program by running `run.exe` in the future. In fact, the `install.cmd` will provoke the `run.exe`. The former is to deal with torch packages, so there's no need to run it after the installation.
 
-#### GUI only (If you have already got torch `1.7.1` GPU environment):
+### Method2. GUI only (If you have already got torch `1.7.1` GPU environment):
 
 Please checkout [GUI only](#GUI only)
 
 # Usage
 After installation, you can delete `opt/package` to free some space.
-You can choose either single music or multiple ones to seperate and get vocal, accompaniment or both. When dealing with a batch of songs, you need to put them in one clean folder.
+Choose either single music or multiple ones to seperate and get vocal, accompaniment or both. 
+When dealing with a batch of songs, you need to put them in one `clean folder`. 
+Note that the output folder should **NOT** be inside the input folder.
 If you have your own model and yaml, please switch to the Settings tab and load your own ckpt and yaml.
 
 
@@ -46,7 +45,7 @@ If it displays "using cuda for separation" and your GPU type, the GPU is being u
 ## GUI only
 It's recommended to use the installer. If you have already got torch `1.7.1`'s gpu environment installed on your Windows PC or just want to use the gui, you can clone this repo to use it in your environment.
 
-If you don't have proper torch installed and want to manually install gui, please first install torch gpu `1.7.1` using the following command.
+If you don't have proper torch installed and want to manually install GUI, please `first` install torch gpu `1.7.1` using the following command.
 ```bash
 conda install pytorch==1.7.1 torchvision==0.8.2 torchaudio==0.7.2 -c pytorch  # or use pip to install
 ```

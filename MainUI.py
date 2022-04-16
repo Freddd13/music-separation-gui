@@ -1,41 +1,55 @@
-from layouts.SingleTab import *
-from layouts.MultipleTab import *
-from layouts.SettingsTab import *
-
-from SepProcessor import get_paths, separate_file, separate_dir
-
 from qgui import CreateQGUI, MessageBox
 from qgui.banner_tools import GitHub
 from qgui.notebook_tools import *
 
-import pathlib
+from layouts.SingleTab import SingleTab
+from layouts.MultipleTab import MultipleTab
+from layouts.SettingsTab import SettingsTab
+
+from SepProcessor import get_paths, separate_file, separate_dir
 
 
 LOCAL_CHECKPOINTS_DIR = os.path.join(os.getcwd(), "models")
 
-class MainLayout(object):
+class MainLayout:
+    '''
+        UI part
+    '''
     def __init__(self):
-        self.setup_UI()
+        self.GUI = None
 
-    def setup_UI(self):
+        self.tab1 = None
+        self.tab2 = None
+        self.tab3 = None
+
         self.setup_base()
         self.setup_layout()
         self.setup_bind_func()
         self.setup_construct()
 
     def setup_base(self):
-        self.Gui = CreateQGUI(title="Music Separation", 
-                   tab_names=["Single", "Batch", "Settings"])
-        self.Gui.add_banner_tool(GitHub(url="https://github.com/bytedance/music_source_separation", name="Original Repo"))
-        self.Gui.add_banner_tool(GitHub(url="https://github.com/Freddd13/music-seperation-gui", name="GUI Repo"))
-        self.Gui.set_navigation_about(author="Freddd13",
-                                version="0.0.3",
-                                github_url="https://github.com/Freddd13",
-                                other_info=["GUI for bytesep"])
-        self.Gui.set_navigation_about(author="qiuqiangkong",
-                                version="21-12-25",
-                                github_url="https://github.com/qiuqiangkong",
-                                other_info=["Bytesep core"]) 
+        self.GUI = CreateQGUI(  title="Music Separation",
+                                tab_names=["Single", "Batch", "Settings"])
+        self.GUI.add_banner_tool(
+                                GitHub(url="https://github.com/bytedance/music_source_separation",
+                                name="Original Repo")
+                                )
+        self.GUI.add_banner_tool(
+                                GitHub(url="https://github.com/Freddd13/music-seperation-gui",
+                                name="GUI Repo")
+                                )
+        self.GUI.set_navigation_about(
+                                        author="Freddd13",
+                                        version="0.0.4",
+                                        github_url="https://github.com/Freddd13",
+                                        other_info=["GUI for bytesep"]
+                                    )
+        self.GUI.set_navigation_about(
+                                        author="qiuqiangkong",
+                                        version="21-12-25",
+                                        github_url="https://github.com/qiuqiangkong",
+                                        other_info=["Bytesep core"]
+                                    )
 
     def setup_layout(self):
         self.tab1 = SingleTab()
@@ -46,25 +60,24 @@ class MainLayout(object):
         self.construct(self.tab1)
         self.construct(self.tab2)
         self.construct(self.tab3)
-    
+
     def construct(self, obj):
         for elem in obj.retrieve():
-            self.Gui.add_notebook_tool(elem)    
+            self.GUI.add_notebook_tool(elem)
 
+    def setup_bind_func(self):
+        return NotImplementedError
 
 
 class MainBind(MainLayout):
+    '''
+        UI-relevant callback function bind
+    '''
     def __init__(self):
         super().__init__()
-        ### These params should exist as a state but there seems no way to let a input box's change invoke its\
-        ### filebtn's callback function.
-        ### Thus I get them from btns every time in the operating functions:
-        # self.single_source_file = ""
-        # self.single_aim_dir = ""
-        # self.multiple_source_dir = ""
-        # self.multiple_aim_dir = ""
-        self.vocal_ckpt_yaml, self.vocal_ckpt_file =  get_paths("vocals", "ResUNet143_Subbandtime")
-        self.accomp_ckpt_yaml, self.accomp_ckpt_file = get_paths("accompaniment", "ResUNet143_Subbandtime") 
+
+        self.vocal_ckpt_yaml, self.vocal_ckpt_file = get_paths("vocals", "ResUNet143_Subbandtime")
+        self.accomp_ckpt_yaml, self.accomp_ckpt_file = get_paths("accompaniment", "ResUNet143_Subbandtime")
 
         self.single_source_type_vocal = False
         self.single_source_type_accomp = True
@@ -74,17 +87,11 @@ class MainBind(MainLayout):
         self.open_after_generation = True
 
         self.single_output_extension = ""
-        self.multiple_output_extension = "" 
+        self.multiple_output_extension = ""
 
     def setup_bind_func(self):
-        # bind functions
-            # self.tab1.source_button.bind_func = self.update_single_source_file
-            # self.tab1.aim_dir.bind_func = self.update_single_aim_dir
-            # self.tab2.source_dir_button.bind_func = self.update_multiple_source_dir
-            # self.tab2.aim_dir_button.bind_func = self.update_multiple_aim_dir
-        
         # bind save setting
-        self.tab3.save_button = self.update_ckpt_and_yaml   
+        self.tab3.save_button = self.update_ckpt_and_yaml
 
         # bind source selection
         self.tab1.check_button = self.update_single_source_type
@@ -106,32 +113,21 @@ class MainBind(MainLayout):
 
 
     ############### bind_funcs ################
-
-    # def update_single_extension(self, args):
-    #     print(self.single_output_extension)
-    
-    # def update_multiple_extension(self, args):
-    #     print(self.multiple_output_extension)
-
-    # def update_single_source_file(self, args):
-    #     self.single_source_file = args[self.tab1.source_button.name].get()
-    
-    # def update_single_aim_dir(self, args):
-    #     self.single_aim_dir = args[self.tab1.aim_dir.name].get()
-
-    # def update_multiple_source_dir(self, args):
-    #     self.multiple_source_dir = args[self.tab2.source_dir_button.name].get()
-    
-    # def update_multiple_aim_dir(self, args):
-    #     self.multiple_aim_dir = args[self.tab2.aim_dir_button.name].get()
-
     def update_single_source_type(self, args):
-        self.single_source_type_vocal = int( args[self.tab1.check_button.name + "-Vocals"].get() )
-        self.single_source_type_accomp = int( args[self.tab1.check_button.name + "-Accompaniment"].get() )
-    
+        self.single_source_type_vocal = int(
+                                            args[self.tab1.check_button.name + "-Vocals"].get()
+                                            )
+        self.single_source_type_accomp = int(
+                                            args[self.tab1.check_button.name + "-Accompaniment"].get()
+                                            )
+
     def update_multiple_source_type(self, args):
-        self.multiple_source_type_vocal = int( args[self.tab2.check_button.name + "-Vocals"].get() )
-        self.multiple_source_type_accomp = int( args[self.tab2.check_button.name + "-Accompaniment"].get() )
+        self.multiple_source_type_vocal = int(
+                                            args[self.tab2.check_button.name + "-Vocals"].get()
+                                            )
+        self.multiple_source_type_accomp = int(
+                                            args[self.tab2.check_button.name + "-Accompaniment"].get()
+                                            )
 
     # ui-operating callbacks
     def do_simple_progress(self, value):
@@ -153,44 +149,46 @@ class MainBind(MainLayout):
         os.startfile(multiple_aim_dir)
 
     def change_single_after_open(self, args):
-        # ????????????????????????
-        self.open_after_generation = True if int( args[self.tab1.toggle_button.name + '-'].get() ) else False
-    
+        self.open_after_generation = bool( int( args[self.tab1.toggle_button.name + '-'].get() ) )
+
     def change_multiple_after_open(self, args):
-        self.open_after_generation = True if int( args[self.tab2.toggle_button.name + '-'].get() ) else False     
+        self.open_after_generation = bool( int( args[self.tab2.toggle_button.name + '-'].get() ) )
 
     def update_ckpt_and_yaml(self, args):
         vocal_ckpt = args[self.tab3.vocal_ckpt_button.name].get()
         vocal_yaml = args[self.tab3.vocal_yaml_button.name].get()
         accomp_ckpt = args[self.tab3.accomp_ckpt_button.name].get()
         accomp_yaml = args[self.tab3.accomp_yaml_button.name].get()
-        
+
         self.vocal_ckpt_file = vocal_ckpt if vocal_ckpt != "auto" else self.vocal_ckpt_file
         self.vocal_ckpt_yaml = vocal_yaml if vocal_yaml != "auto" else self.vocal_ckpt_yaml
         self.accomp_ckpt_file = accomp_ckpt if accomp_ckpt != "auto" else self.accomp_ckpt_file
         self.accomp_ckpt_yaml = accomp_yaml if accomp_yaml != "auto" else self.accomp_ckpt_yaml
 
-        MessageBox.info("Set vocal ckpt to {}.\n".format(self.vocal_ckpt_file) + \
-                        "Set vocal yaml to {}.\n".format(self.vocal_ckpt_yaml) + \
-                        "Set accomp ckpt to {}.\n".format(self.accomp_ckpt_file) + \
-                        "Set accomp yaml to {}.\n".format(self.accomp_ckpt_yaml)
+        MessageBox.info(f"Set vocal ckpt to {self.vocal_ckpt_file}.\n" + \
+                        f"Set vocal yaml to {self.vocal_ckpt_yaml}.\n" + \
+                        f"Set accomp ckpt to {self.accomp_ckpt_file}.\n" + \
+                        f"Set accomp yaml to {self.accomp_ckpt_yaml}.\n"
         )
 
     # sep-operating functions
-    def run_single(self):
+    def run_single(self, args):
         return NotImplementedError
-    
-    def run_multiple(self):
+
+    def run_multiple(self, args):
         return not NotImplementedError
 
 
 class MainWindow(MainBind):
+    '''
+        Interact with UI and separator
+    '''
     def __init__(self):
-        super(MainWindow, self).__init__()
+        super().__init__()
         self.init_environment()
-    
+
     def init_environment(self):
-            os.environ["PATH"] += os.pathsep + os.path.join(os.getcwd(), "tools")
+        os.environ["PATH"] += os.pathsep + os.path.join(os.getcwd(), "tools")
 
     def run_single(self, args):
         single_source_file = args[self.tab1.source_button.name].get()
@@ -213,7 +211,7 @@ class MainWindow(MainBind):
         elif self.single_source_type_accomp:
             source_type = "accompaniment"
             checkpoint_paths = [self.accomp_ckpt_file]
-            config_yamls = [self.accomp_ckpt_yaml]          
+            config_yamls = [self.accomp_ckpt_yaml]
         else:
             MessageBox.info("Please choose at least one source type!")
             return
@@ -232,12 +230,12 @@ class MainWindow(MainBind):
                 cpu = False,
                 extension = extension,
                 source_type=source_type,
-                progress = self        
+                progress = self
         )
 
         if self.open_after_generation:
             os.startfile(single_aim_dir)
-        
+
 
     def run_multiple(self, args):
         multiple_source_dir = args[self.tab2.source_dir_button.name].get()
@@ -259,7 +257,7 @@ class MainWindow(MainBind):
         elif self.multiple_source_type_accomp:
             source_type = "accompaniment"
             checkpoint_paths = [self.accomp_ckpt_file]
-            config_yamls = [self.accomp_ckpt_yaml]          
+            config_yamls = [self.accomp_ckpt_yaml]
         else:
             MessageBox.info("Please choose at least one source type!！")
             return
@@ -275,15 +273,14 @@ class MainWindow(MainBind):
                 outputs_dir = multiple_aim_dir,
                 scale_volume = False,
                 cpu = False,
-                extension = extension,       
-                source_type=source_type,                         
+                extension = extension,
+                source_type=source_type,
                 progress = self
-        )        
+        )
 
         if self.open_after_generation:
             os.startfile(multiple_aim_dir)
 
-
 if __name__ == '__main__':
     M = MainWindow()
-    M.Gui.run()
+    M.GUI.run()
